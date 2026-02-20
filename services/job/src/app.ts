@@ -1,7 +1,10 @@
-import dotenv from "dotenv";
-dotenv.config({ quiet: true });
 import express from "express";
+import jobRoutes from "./routes/job.js";
 
 const app = express();
+
+app.use(express.json());
+
+app.use("/api/jobs", jobRoutes);
 
 export default app;
