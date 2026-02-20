@@ -71,3 +71,30 @@ export const createCompany = TryCatch(
     });
   },
 );
+
+export const deleteCompany = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
+
+    const { companyId } = req.params;
+
+    const [company] = await sql`
+      SELECT logo_public_id FROM COMPANIES WHERE company_id = ${companyId} AND recruiter_id = ${user?.user_id}
+    `;
+
+    if (!company) {
+      throw new ErrorHandler(
+        404,
+        "Company not found or you do not have permission to delete it",
+      );
+    }
+
+    await sql`
+      DELETE FROM COMPANIES WHERE company_id = ${companyId}
+    `;
+
+    res.json({
+      message: "Company and all associated jobs deleted successfully",
+    });
+  },
+);
