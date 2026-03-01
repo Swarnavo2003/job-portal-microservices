@@ -98,3 +98,66 @@ export const deleteCompany = TryCatch(
     });
   },
 );
+
+export const createJob = TryCatch(async (req: AuthenticatedRequest, res) => {
+  const user = req.user;
+
+  if (!user) {
+    throw new ErrorHandler(401, "Unauthorized - Authentication required");
+  }
+
+  if (user.role !== "recruiter") {
+    throw new ErrorHandler(
+      403,
+      "Forbidden - Only Recruiters can create companies",
+    );
+  }
+
+  const {
+    title,
+    description,
+    salary,
+    location,
+    role,
+    job_type,
+    work_location,
+    company_id,
+    openings,
+  } = req.body;
+
+  if (
+    !title ||
+    !description ||
+    !salary ||
+    !location ||
+    !role ||
+    !job_type ||
+    !work_location ||
+    !company_id ||
+    !openings
+  ) {
+    throw new ErrorHandler(400, "Bad Request - Missing required fields");
+  }
+
+  const [company] = await sql`
+    SELECT company_id FROM COMPANIES WHERE company_id = ${company_id} AND recruiter_id = ${user.user_id}
+  `;
+
+  if (!company) {
+    throw new ErrorHandler(
+      404,
+      "Company not found or you do not have permission to create a job for it",
+    );
+  }
+
+  const [newJob] = await sql`
+    INSERT INTO jobs (title, description, salary, location, role, job_type, work_location, company_id, posted_by_recruiter_id, openings)
+    VALUES (${title}, ${description}, ${salary}, ${location}, ${role}, ${job_type}, ${work_location}, ${company_id}, ${user.user_id}, ${openings})
+    RETURNING *
+  `;
+
+  return res.status(201).json({
+    message: "Job created successfully",
+    job: newJob,
+  });
+});
