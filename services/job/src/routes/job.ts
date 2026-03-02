@@ -6,6 +6,7 @@ import {
   createJob,
   deleteCompany,
   getAllCompanies,
+  getCompanyDetails,
   updateJob,
 } from "../controllers/job.js";
 
@@ -16,5 +17,6 @@ router.delete("/company/:companyId", isAuth, deleteCompany);
 router.post("/new", isAuth, createJob);
 router.put("/:jobId", isAuth, updateJob);
 router.get("/company/all", isAuth, getAllCompanies);
+router.get("/company/:id", isAuth, getCompanyDetails);
 
 export default router;
