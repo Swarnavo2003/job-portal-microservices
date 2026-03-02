@@ -47,8 +47,22 @@ async function initDB() {
         company_id INTEGER NOT NULL REFERENCES companies(company_id) ON DELETE CASCADE,
         posted_by_recruiter_id INTEGER NOT NULL,
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-        isActive BOOLEAN DEFAULT TRUE
+        is_active  BOOLEAN DEFAULT TRUE
       );
+    `;
+
+    // Migration: rename isActive -> is_active if old column still exists
+    await sql`
+      DO $$
+      BEGIN
+        IF EXISTS (
+          SELECT 1 FROM information_schema.columns 
+          WHERE table_name = 'jobs' AND column_name = 'isactive'
+        ) THEN
+          ALTER TABLE jobs RENAME COLUMN isactive TO is_active;
+        END IF;
+      END
+      $$;
     `;
 
     await sql`
