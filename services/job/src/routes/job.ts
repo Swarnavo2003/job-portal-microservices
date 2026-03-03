@@ -5,6 +5,7 @@ import {
   createCompany,
   createJob,
   deleteCompany,
+  getAllActiveJobs,
   getAllCompanies,
   getCompanyDetails,
   updateJob,
@@ -18,5 +19,6 @@ router.post("/new", isAuth, createJob);
 router.put("/:jobId", isAuth, updateJob);
 router.get("/company/all", isAuth, getAllCompanies);
 router.get("/company/:id", isAuth, getCompanyDetails);
+router.get("/all", getAllActiveJobs);
 
 export default router;
