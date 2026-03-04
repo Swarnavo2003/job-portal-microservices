@@ -2,8 +2,11 @@ import dotenv from "dotenv";
 dotenv.config({ quiet: true });
 import app from "./app.js";
 import { sql } from "./utils/db.js";
+import { connectKafka } from "./utils/producer.js";
 
 const PORT = process.env.PORT || 3000;
+
+connectKafka();
 
 async function initDB() {
   try {

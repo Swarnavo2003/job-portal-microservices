@@ -4,6 +4,8 @@ import getBuffer from "../utils/buffer.js";
 import { sql } from "../utils/db.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/TryCatch.js";
+import { applicationStatusUpdateTemplate } from "../utils/template.js";
+import { publisToTopic } from "../utils/producer.js";
 
 export const createCompany = TryCatch(
   async (req: AuthenticatedRequest, res) => {
@@ -330,5 +332,69 @@ export const getAllApplicationForJob = TryCatch(
     `;
 
     return res.status(200).json(applications);
+  },
+);
+
+export const updateApplication = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
+
+    if (!user) {
+      throw new ErrorHandler(401, "Unauthorized - Authentication required");
+    }
+
+    if (user.role !== "recruiter") {
+      throw new ErrorHandler(
+        403,
+        "Forbidden - Only Recruiters can apply for jobs",
+      );
+    }
+
+    const { id } = req.params;
+
+    const [application] = await sql`
+      SELECT * FROM applications WHERE application_id = ${id}
+    `;
+
+    if (!application) {
+      throw new ErrorHandler(404, "Application not found");
+    }
+
+    const [job] = await sql`
+      SELECT posted_by_recruiter_id, title FROM jobs WHERE job_id = ${application.job_id}
+    `;
+
+    if (!job) {
+      throw new ErrorHandler(404, "No job found for this id");
+    }
+
+    if (job.posted_by_recruiter_id !== user.user_id) {
+      throw new ErrorHandler(
+        403,
+        "Forbidden - You do not have permission to update this application",
+      );
+    }
+
+    const [updatedApplication] = await sql`
+      UPDATE applications SET status = ${req.body.status}
+      WHERE application_id = ${id}
+      RETURNING *
+    `;
+
+    const message = {
+      to: application.applicant_email,
+      subject: "Application Update",
+      html: applicationStatusUpdateTemplate(job.title),
+    };
+
+    publisToTopic("send-mail", message).catch((error) => {
+      console.error("Failed to publish message to kafka", error);
+    });
+
+    return res.status(200).json({
+      message: "Application Updated",
+      job,
+      application: updatedApplication,
+    });
   },
 );
