@@ -292,3 +292,43 @@ export const getSingleJob = TryCatch(async (req, res) => {
 
   return res.status(200).json(job);
 });
+
+export const getAllApplicationForJob = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
+
+    if (!user) {
+      throw new ErrorHandler(401, "Unauthorized - Authentication required");
+    }
+
+    if (user.role !== "recruiter") {
+      throw new ErrorHandler(
+        403,
+        "Forbidden - Only Recruiters can apply for jobs",
+      );
+    }
+
+    const { jobId } = req.params;
+
+    const [job] = await sql`
+      SELECT posted_by_recruiter_id FROM jobs WHERE job_id = ${jobId}
+    `;
+
+    if (!job) {
+      throw new ErrorHandler(404, "Job not found");
+    }
+
+    if (job.posted_by_recruiter_id !== user.user_id) {
+      throw new ErrorHandler(
+        403,
+        "Forbidden - You do not have permission to apply for this job",
+      );
+    }
+
+    const applications = await sql`
+      SELECT * FROM applications WHERE job_id = ${jobId} ORDER BY subscribed DESC, applied_at ASC
+    `;
+
+    return res.status(200).json(applications);
+  },
+);
