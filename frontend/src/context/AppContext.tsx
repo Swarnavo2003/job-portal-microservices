@@ -41,6 +41,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
+  async function logoutUser() {
+    Cookies.set("token", "");
+    setUser(null);
+    setIsAuth(false);
+    toast.success("Logged out successfully");
+  }
+
   useEffect(() => {
     fetchUser();
   }, []);
@@ -56,6 +63,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setLoading,
         setBtnLoading,
         setIsAuth,
+        logoutUser,
       }}
     >
       {children}

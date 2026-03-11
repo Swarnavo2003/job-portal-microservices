@@ -75,6 +75,7 @@ export interface AppContextType {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setBtnLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  logoutUser: () => Promise<void>;
 }
 
 export interface AppProviderProps {
