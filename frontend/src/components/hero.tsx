@@ -1,7 +1,6 @@
 import { ArrowRight, Briefcase, Search, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import Image from "next/image";
 
 export const Hero = () => {
   return (

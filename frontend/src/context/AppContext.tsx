@@ -35,7 +35,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     } catch (error: any) {
       setIsAuth(false);
       setUser(null);
-      toast.error("Something went wrong", error.message);
+      // toast.error("Something went wrong", error.message);
     } finally {
       setLoading(false);
     }
