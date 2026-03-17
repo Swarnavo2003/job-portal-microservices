@@ -83,6 +83,7 @@ export interface AppContextType {
     skill: string,
     setSkill: React.Dispatch<React.SetStateAction<string>>,
   ) => Promise<void>;
+  removeSkill: (skill: string) => Promise<void>;
 }
 
 export interface AppProviderProps {

@@ -15,7 +15,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export const Skills: React.FC<AccountProps> = ({ user, isYourAccount }) => {
-  const { addSkill, btnLoading } = useAppData();
+  const { addSkill, btnLoading, removeSkill } = useAppData();
   const [skill, setSkill] = useState("");
 
   const addSkillHandler = () => {
@@ -33,8 +33,10 @@ export const Skills: React.FC<AccountProps> = ({ user, isYourAccount }) => {
   };
 
   const removeSkillHandler = (skillToRemove: string) => {
-    if (confirm(`Are you sure you want to remove ${skillToRemove}?`)) {
-    }
+    // if (confirm(`Are you sure you want to remove ${skillToRemove}?`)) {
+    //   removeSkill(skillToRemove);
+    // }
+    removeSkill(skillToRemove);
   };
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">

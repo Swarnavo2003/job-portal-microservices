@@ -138,6 +138,24 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
+  async function removeSkill(skill: string) {
+    try {
+      const { data } = await axios.put(
+        `${user_service}/api/user/skill/delete`,
+        { skillName: skill },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success(data.message);
+      fetchUser();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  }
+
   useEffect(() => {
     fetchUser();
   }, []);
@@ -158,6 +176,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateResume,
         updateUser,
         addSkill,
+        removeSkill,
       }}
     >
       {children}
