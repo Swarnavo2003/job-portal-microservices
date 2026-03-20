@@ -94,3 +94,64 @@ export interface AccountProps {
   user: User;
   isYourAccount: boolean;
 }
+
+export type JobType = {
+  Full_time: "Full-time";
+  Part_time: "Part-time";
+  Contract: "Contract";
+  Internship: "Internship";
+};
+
+export type WorkLocation = {
+  Onsite: "Onsite";
+  Remote: "Remote";
+  Hybrid: "Hybrid";
+};
+
+export interface Job {
+  job_id: number;
+  title: string;
+  description: string;
+  salary: number | null;
+  location: string | null;
+  job_type: JobType;
+  openings: number;
+  role: string;
+  work_location: WorkLocation;
+  company_id: number;
+  posted_by_recruiter_id: number;
+  created_at: string;
+  is_active: boolean;
+}
+
+export interface Company {
+  company_id: number;
+  name: string;
+  description: string;
+  website: string;
+  logo: string;
+  logo_public_id: string;
+  recruiter_id: string;
+  created_at: string;
+  jobs?: Job[];
+}
+
+export type ApplicationStatus = {
+  Submitted: "Submitted";
+  Rejected: "Rejected";
+  Hired: "Hired";
+};
+
+export interface Application {
+  application_id: number;
+  job_id: number;
+  applicant_id: number;
+  applicant_email: string;
+  status: ApplicationStatus;
+  resume: string;
+  applied_at: string;
+  subscribed: boolean;
+  job_title: string;
+  job_salary: number;
+  job_location: string;
+}

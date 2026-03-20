@@ -4,6 +4,7 @@ import { Loading } from "@/components/loading";
 import { useAppData } from "@/context/AppContext";
 import { Info } from "./_components/info";
 import { Skills } from "./_components/skills";
+import { Company } from "./_components/company";
 
 export default function AccountPage() {
   const { user, loading } = useAppData();
@@ -18,6 +19,7 @@ export default function AccountPage() {
           {user.role === "jobseeker" && (
             <Skills user={user} isYourAccount={true} />
           )}
+          {user.role === "recruiter" && <Company />}
         </div>
       )}
     </>
