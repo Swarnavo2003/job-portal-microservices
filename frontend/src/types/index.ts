@@ -131,7 +131,7 @@ export interface Company {
   website: string;
   logo: string;
   logo_public_id: string;
-  recruiter_id: string;
+  recruiter_id: number;
   created_at: string;
   jobs?: Job[];
 }
