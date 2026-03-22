@@ -57,6 +57,8 @@ export const Company = () => {
 
   const token = Cookies.get("token");
 
+  const [companyLoading, setCompanyLoading] = useState(true);
+
   async function fetchCompanies() {
     try {
       const { data } = await axios.get(`${job_service}/api/jobs/company/all`, {
@@ -68,6 +70,8 @@ export const Company = () => {
       setCompanies(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setCompanyLoading(false);
     }
   }
 
@@ -102,8 +106,13 @@ export const Company = () => {
       } else {
         toast.error("Something went wrong");
       }
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
     } finally {
       setBtnLoading(false);
     }
@@ -125,8 +134,13 @@ export const Company = () => {
         toast.success(data.message);
         fetchCompanies();
       }
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
     } finally {
       setBtnLoading(false);
     }
@@ -168,76 +182,80 @@ export const Company = () => {
           </div>
         </div>
 
-        <div className="p-6">
-          {companies.length > 0 ? (
-            <div className="grid gap-4">
-              {companies.map((c) => (
-                <div
-                  key={c.company_id}
-                  className="flex items-center gap-4 p-4 rounded-lg border-2 hover:border-blue-500 transition-all bg-background"
-                >
-                  <div className="h-16 w-16 rounded-full border-2 overflow-hidden shrink-0 bg-background">
-                    <img
-                      src={c.logo}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+        {companyLoading ? (
+          <Loading />
+        ) : (
+          <div className="p-6">
+            {companies.length > 0 ? (
+              <div className="grid gap-4">
+                {companies.map((c) => (
+                  <div
+                    key={c.company_id}
+                    className="flex items-center gap-4 p-4 rounded-lg border-2 hover:border-blue-500 transition-all bg-background"
+                  >
+                    <div className="h-16 w-16 rounded-full border-2 overflow-hidden shrink-0 bg-background">
+                      <img
+                        src={c.logo}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
 
-                  {/* Company Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-lg mb-1 truncate">
-                      {c.name}
-                    </h3>
-                    <p className="text-sm opacity-70 line-clamp-2 mb-2">
-                      {c.description}
-                    </p>
-                    <a
-                      href={c.website}
-                      target="_blank"
-                      className="text-xs text-blue-500 hover:underline flex items-center gap-1"
-                    >
-                      <Globe size={12} />
-                      {c.website}
-                    </a>
-                  </div>
+                    {/* Company Info */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-lg mb-1 truncate">
+                        {c.name}
+                      </h3>
+                      <p className="text-sm opacity-70 line-clamp-2 mb-2">
+                        {c.description}
+                      </p>
+                      <a
+                        href={c.website}
+                        target="_blank"
+                        className="text-xs text-blue-500 hover:underline flex items-center gap-1"
+                      >
+                        <Globe size={12} />
+                        {c.website}
+                      </a>
+                    </div>
 
-                  {/* Actions */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <Link href={`/company/${c.company_id}`}>
-                      <Button variant={"outline"} className="h-9 w-9">
-                        <Eye size={16} />
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Link href={`/company/${c.company_id}`}>
+                        <Button variant={"outline"} className="h-9 w-9">
+                          <Eye size={16} />
+                        </Button>
+                      </Link>
+
+                      <Button
+                        variant={"destructive"}
+                        size={"icon"}
+                        className="h-9 w-9"
+                        onClick={() => deleteCompany(c.company_id)}
+                      >
+                        <Trash size={16} />
                       </Button>
-                    </Link>
-
-                    <Button
-                      variant={"destructive"}
-                      size={"icon"}
-                      className="h-9 w-9"
-                      onClick={() => deleteCompany(c.company_id)}
-                    >
-                      <Trash size={16} />
-                    </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <>
-              <div className="text-center py-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
-                  <Building2 size={32} className="opacity-40" />
-                </div>
-                <CardDescription className="text-base mb-4">
-                  No Companies Registered Yet
-                </CardDescription>
-                <p className="text-sm opacity-60">
-                  Add your first company to start posting jobs
-                </p>
+                ))}
               </div>
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                <div className="text-center py-12">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
+                    <Building2 size={32} className="opacity-40" />
+                  </div>
+                  <CardDescription className="text-base mb-4">
+                    No Companies Registered Yet
+                  </CardDescription>
+                  <p className="text-sm opacity-60">
+                    Add your first company to start posting jobs
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </Card>
 
       {/* Add Company Dialog */}

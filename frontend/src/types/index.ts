@@ -95,18 +95,18 @@ export interface AccountProps {
   isYourAccount: boolean;
 }
 
-export type JobType = {
+export interface JobType {
   Full_time: "Full-time";
   Part_time: "Part-time";
   Contract: "Contract";
   Internship: "Internship";
-};
+}
 
-export type WorkLocation = {
+export interface WorkLocation {
   Onsite: "Onsite";
   Remote: "Remote";
   Hybrid: "Hybrid";
-};
+}
 
 export interface Job {
   job_id: number;
@@ -114,10 +114,10 @@ export interface Job {
   description: string;
   salary: number | null;
   location: string | null;
-  job_type: JobType;
+  job_type: "Full-time" | "Part-time" | "Contract" | "Internship";
   openings: number;
   role: string;
-  work_location: WorkLocation;
+  work_location: "Onsite" | "Remote" | "Hybrid";
   company_id: number;
   posted_by_recruiter_id: number;
   created_at: string;
