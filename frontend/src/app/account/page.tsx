@@ -5,9 +5,12 @@ import { useAppData } from "@/context/AppContext";
 import { Info } from "./_components/info";
 import { Skills } from "./_components/skills";
 import { Company } from "./_components/company";
+import { redirect } from "next/navigation";
 
 export default function AccountPage() {
-  const { user, loading } = useAppData();
+  const { user, loading, isAuth } = useAppData();
+
+  if (!isAuth) return redirect("/login");
 
   if (loading || !user) return <Loading />;
 

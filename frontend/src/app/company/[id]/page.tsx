@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Cookies from "js-cookie";
 import { job_service, useAppData } from "@/context/AppContext";
 import { useEffect, useRef, useState } from "react";
@@ -58,7 +58,6 @@ export default function CompanyPage() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const addModalRef = useRef<HTMLButtonElement>(null);
-  const updatedModalRef = useRef<HTMLButtonElement>(null);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -214,6 +213,8 @@ export default function CompanyPage() {
   }, [id]);
 
   if (loading) return <Loading />;
+
+  if (isAuth) return redirect("/");
 
   const isRecruiterOwner =
     user && company && user.user_id === company.recruiter_id;

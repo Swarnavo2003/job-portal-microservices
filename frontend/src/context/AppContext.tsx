@@ -32,10 +32,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       setUser(data);
       setIsAuth(true);
-    } catch (error: any) {
+    } catch (error) {
       setIsAuth(false);
       setUser(null);
-      // toast.error("Something went wrong", error.message);
+      console.log(error);
+      // if (axios.isAxiosError(error)) {
+      //   const errorMessage =
+      //     error.response?.data?.message || "Something went wrong";
+      //   toast.error(errorMessage);
+      // }
     } finally {
       setLoading(false);
     }
@@ -56,8 +61,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       toast.success(data.message);
       await fetchUser();
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -78,8 +88,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       toast.success(data.message);
       fetchUser();
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -99,8 +114,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       );
       toast.success(data.message);
       fetchUser();
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
     } finally {
       setBtnLoading(false);
     }
@@ -131,8 +151,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       toast.success(data.message);
       setSkill("");
       fetchUser();
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
     } finally {
       setBtnLoading(false);
     }
@@ -151,8 +176,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       );
       toast.success(data.message);
       fetchUser();
-    } catch (error: any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
     }
   }
 
