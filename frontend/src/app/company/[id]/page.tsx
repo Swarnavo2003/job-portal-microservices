@@ -214,7 +214,7 @@ export default function CompanyPage() {
 
   if (loading) return <Loading />;
 
-  if (isAuth) return redirect("/");
+  if (!isAuth) return redirect("/");
 
   const isRecruiterOwner =
     user && company && user.user_id === company.recruiter_id;
