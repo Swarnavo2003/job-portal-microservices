@@ -186,6 +186,36 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
+  async function applyJob(job_id: number) {
+    setBtnLoading(true);
+    try {
+      const { data, status } = await axios.post(
+        `${user_service}/api/user/apply/job`,
+        {
+          job_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (status === 201) {
+        toast.success(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
+    } finally {
+      setBtnLoading(false);
+    }
+  }
+
   useEffect(() => {
     fetchUser();
   }, []);
@@ -207,6 +237,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateUser,
         addSkill,
         removeSkill,
+        applyJob,
       }}
     >
       {children}

@@ -18,7 +18,11 @@ interface JobCardProps {
 }
 
 export const JobCard: React.FC<JobCardProps> = ({ job }) => {
-  const { user, btnLoading } = useAppData();
+  const { user, btnLoading, applyJob } = useAppData();
+
+  const applyJobHandler = (id: number) => {
+    applyJob(id);
+  };
 
   return (
     <Card className="w-full hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500 group">
@@ -74,7 +78,11 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
           {user && user.role === "jobseeker" && (
             <>
               {job.is_active !== false && (
-                <Button disabled={btnLoading} className="flex-1 gap-2">
+                <Button
+                  disabled={btnLoading}
+                  onClick={() => applyJob(job.job_id)}
+                  className="flex-1 gap-2"
+                >
                   <Briefcase size={16} />
                   Easy Apply
                 </Button>

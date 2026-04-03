@@ -84,6 +84,7 @@ export interface AppContextType {
     setSkill: React.Dispatch<React.SetStateAction<string>>,
   ) => Promise<void>;
   removeSkill: (skill: string) => Promise<void>;
+  applyJob: (job_id: number) => Promise<void>;
 }
 
 export interface AppProviderProps {
