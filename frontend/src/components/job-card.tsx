@@ -1,28 +1,42 @@
 "use client";
 
-import { Job } from "@/types";
+import { Application, Job } from "@/types";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { useAppData } from "@/context/AppContext";
 import {
   ArrowRight,
   Briefcase,
   Building2,
+  CheckCircle,
   DollarSign,
   MapPin,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { useEffect, useState } from "react";
 
 interface JobCardProps {
   job: Job;
 }
 
 export const JobCard: React.FC<JobCardProps> = ({ job }) => {
-  const { user, btnLoading, applyJob } = useAppData();
+  const { user, btnLoading, applyJob, applications } = useAppData();
 
   const applyJobHandler = (id: number) => {
     applyJob(id);
   };
+
+  const [applied, setApplied] = useState(false);
+
+  useEffect(() => {
+    if (applications && job.job_id) {
+      applications.forEach((item: Application) => {
+        if (item.job_id === job.job_id) {
+          setApplied(true);
+        }
+      });
+    }
+  }, [applications, job.job_id]);
 
   return (
     <Card className="w-full hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-500 group">
@@ -77,15 +91,26 @@ export const JobCard: React.FC<JobCardProps> = ({ job }) => {
 
           {user && user.role === "jobseeker" && (
             <>
-              {job.is_active !== false && (
-                <Button
-                  disabled={btnLoading}
-                  onClick={() => applyJob(job.job_id)}
-                  className="flex-1 gap-2"
+              {applied ? (
+                <div
+                  className="flex-1 flex items-center justify-center gap-2 text-green-600 font-medium text-sm bg-green-100
+                dark:bg-green-900/30 rounded-md px-3 py-2"
                 >
-                  <Briefcase size={16} />
-                  Easy Apply
-                </Button>
+                  <CheckCircle size={15} /> Applied
+                </div>
+              ) : (
+                <>
+                  {job.is_active !== false && (
+                    <Button
+                      disabled={btnLoading}
+                      onClick={() => applyJobHandler(job.job_id)}
+                      className="flex-1 gap-2"
+                    >
+                      <Briefcase size={16} />
+                      Easy Apply
+                    </Button>
+                  )}
+                </>
               )}
             </>
           )}

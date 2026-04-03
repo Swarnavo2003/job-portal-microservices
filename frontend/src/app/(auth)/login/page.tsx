@@ -17,7 +17,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
 
-  const { isAuth, setUser, loading, setIsAuth } = useAppData();
+  const { isAuth, setUser, loading, setIsAuth, fetchApplications } =
+    useAppData();
 
   if (loading) return <Loading />;
 
@@ -43,9 +44,16 @@ export default function LoginPage() {
 
       setUser(data.user);
       setIsAuth(true);
-    } catch (error: any) {
-      toast.error(error.response.data.message);
-      setIsAuth(true);
+      fetchApplications();
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+        setIsAuth(false);
+        setUser(null);
+      }
     } finally {
       setBtnLoading(false);
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { AppContextType, AppProviderProps, User } from "@/types";
+import { AppContextType, Application, AppProviderProps, User } from "@/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -203,6 +203,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       if (status === 201) {
         toast.success(data.message);
+        fetchApplications();
       }
     } catch (error) {
       console.log(error);
@@ -216,8 +217,35 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
+  const [applications, setApplications] = useState<Application[] | null>(null);
+
+  async function fetchApplications() {
+    try {
+      const { data, status } = await axios.get(
+        `${user_service}/api/user/application/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (status === 200) {
+        setApplications(data);
+      }
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+      }
+    }
+  }
+
   useEffect(() => {
     fetchUser();
+    fetchApplications();
   }, []);
 
   return (
@@ -238,6 +266,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         addSkill,
         removeSkill,
         applyJob,
+        applications,
+        fetchApplications,
       }}
     >
       {children}
