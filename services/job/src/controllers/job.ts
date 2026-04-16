@@ -368,7 +368,7 @@ export const updateApplication = TryCatch(
       throw new ErrorHandler(404, "No job found for this id");
     }
 
-    if (job.posted_by_recruiter_id !== user.user_id) {
+    if (Number(job.posted_by_recruiter_id) !== Number(user.user_id)) {
       throw new ErrorHandler(
         403,
         "Forbidden - You do not have permission to update this application",

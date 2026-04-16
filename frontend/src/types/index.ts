@@ -152,7 +152,7 @@ export interface Application {
   job_id: number;
   applicant_id: number;
   applicant_email: string;
-  status: ApplicationStatus;
+  status: "Submitted" | "Rejected" | "Hired";
   resume: string;
   applied_at: string;
   subscribed: boolean;

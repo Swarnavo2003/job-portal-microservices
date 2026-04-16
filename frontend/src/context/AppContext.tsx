@@ -63,11 +63,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       await fetchUser();
     } catch (error) {
       console.log(error);
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message || "Something went wrong";
-        toast.error(errorMessage);
-      }
+      // if (axios.isAxiosError(error)) {
+      //   const errorMessage =
+      //     error.response?.data?.message || "Something went wrong";
+      //   toast.error(errorMessage);
+      // }
     } finally {
       setLoading(false);
     }
